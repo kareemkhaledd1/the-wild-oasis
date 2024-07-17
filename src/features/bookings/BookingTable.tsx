@@ -4,9 +4,10 @@ import Menus from "../../ui/Menus";
 import Empty from "../../ui/Empty.tsx";
 import { useBookings } from "../../hooks/useBookings.ts";
 import Spinner from "../../ui/Spinner.tsx";
+import Pagination from "../../ui/Pagination.tsx";
 
 function BookingTable() {
-  const { isPending, bookings } = useBookings();
+  const { isPending, bookings, count } = useBookings();
 
   if (isPending) return <Spinner />;
 
@@ -32,6 +33,9 @@ function BookingTable() {
             <BookingRow key={booking.id} booking={booking} />
           )}
         />
+        <Table.Footer>
+          <Pagination count={count} />
+        </Table.Footer>
       </Table>
     </Menus>
   );
