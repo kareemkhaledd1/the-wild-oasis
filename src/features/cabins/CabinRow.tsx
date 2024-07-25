@@ -93,7 +93,6 @@ function CabinRow({ cabin }: { cabin: cabin }) {
         <Modal>
           <Menus.Menu>
             <Menus.Toggle id={`${cabinId}`} />
-
             <Menus.List id={`${cabinId}`}>
               <Menus.Button
                 icon={<HiSquare2Stack />}

@@ -7,6 +7,14 @@ import Table from "../../ui/Table";
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
 import { booking, TagType } from "../../utils/types.ts";
+import Menus from "../../ui/Menus.tsx";
+import { HiArrowDownOnSquare, HiArrowUpOnSquare, HiEye } from "react-icons/hi2";
+import { useNavigate } from "react-router-dom";
+import { useCheckout } from "../../hooks/useCheckout.ts";
+import { HiTrash } from "react-icons/hi";
+import { useDeleteBooking } from "../../hooks/useDeleteBooking.ts";
+import Modal from "../../ui/Modal.tsx";
+import ConfirmDelete from "../../ui/ConfirmDelete.tsx";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -51,12 +59,16 @@ function BookingRow({
 }: {
   booking: booking;
 }) {
+  const navigate = useNavigate();
+
+  const { checkout, isCheckingOut } = useCheckout();
+  const { isDeleting, deleteBooking } = useDeleteBooking();
+
   const statusToTagName: { [key: string]: TagType } = {
     unconfirmed: "blue",
     "checked-in": "green",
     "checked-out": "silver",
   };
-
   return (
     <Table.Row>
       <Cabin>{cabinName}</Cabin>
@@ -82,6 +94,52 @@ function BookingRow({
       <Tag $type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
 
       <Amount>{formatCurrency(totalPrice)}</Amount>
+      <Modal>
+        <Menus.Menu>
+          <Menus.Toggle id={`${bookingId}`} />
+          <Menus.List id={`${bookingId}`}>
+            <Menus.Button
+              icon={<HiEye />}
+              onClick={() => navigate(`/bookings/${bookingId}`)}
+            >
+              See details
+            </Menus.Button>
+
+            {status === "unconfirmed" && (
+              <Menus.Button
+                icon={<HiArrowDownOnSquare />}
+                onClick={() => navigate(`/checkin/${bookingId}`)}
+              >
+                check in
+              </Menus.Button>
+            )}
+
+            {status === "checked-in" && (
+              <Menus.Button
+                icon={<HiArrowUpOnSquare />}
+                onClick={() => checkout(bookingId)}
+                disabled={isCheckingOut}
+              >
+                check out
+              </Menus.Button>
+            )}
+
+            {status === "checked-out" && (
+              <Modal.Open opens="delete">
+                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+              </Modal.Open>
+            )}
+          </Menus.List>
+
+          <Modal.Window name="delete">
+            <ConfirmDelete
+              resourceName={"booking"}
+              onConfirm={() => deleteBooking(bookingId)}
+              disabled={isDeleting}
+            />
+          </Modal.Window>
+        </Menus.Menu>
+      </Modal>
     </Table.Row>
   );
 }

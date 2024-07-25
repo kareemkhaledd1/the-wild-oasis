@@ -11,6 +11,11 @@ import DataItem from "../../ui/DataItem";
 import { Flag } from "../../ui/Flag";
 
 import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
+import { bookingDataProps } from "../../utils/types.ts";
+
+interface BookingDataBoxProps {
+  $isPaid: boolean;
+}
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -68,7 +73,7 @@ const Guest = styled.div`
   }
 `;
 
-const Price = styled.div`
+const Price = styled.div<BookingDataBoxProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -77,9 +82,9 @@ const Price = styled.div`
   margin-top: 2.4rem;
 
   background-color: ${(props) =>
-    props.isPaid ? "var(--color-green-100)" : "var(--color-yellow-100)"};
+    props.$isPaid ? "var(--color-green-100)" : "var(--color-yellow-100)"};
   color: ${(props) =>
-    props.isPaid ? "var(--color-green-700)" : "var(--color-yellow-700)"};
+    props.$isPaid ? "var(--color-green-700)" : "var(--color-yellow-700)"};
 
   & p:last-child {
     text-transform: uppercase;
@@ -102,7 +107,7 @@ const Footer = styled.footer`
 `;
 
 // A purely presentational component
-function BookingDataBox({ booking }) {
+function BookingDataBox({ booking }: { booking: bookingDataProps }) {
   const {
     created_at,
     startDate,
@@ -149,7 +154,6 @@ function BookingDataBox({ booking }) {
           <span>&bull;</span>
           <p>National ID {nationalID}</p>
         </Guest>
-
         {observations && (
           <DataItem
             icon={<HiOutlineChatBubbleBottomCenterText />}
@@ -158,18 +162,17 @@ function BookingDataBox({ booking }) {
             {observations}
           </DataItem>
         )}
-
         <DataItem icon={<HiOutlineCheckCircle />} label="Breakfast included?">
           {hasBreakfast ? "Yes" : "No"}
         </DataItem>
 
-        <Price isPaid={isPaid}>
+        <Price $isPaid={isPaid}>
           <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
             {formatCurrency(totalPrice)}
 
             {hasBreakfast &&
               ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
-                extrasPrice
+                extrasPrice,
               )} breakfast)`}
           </DataItem>
 

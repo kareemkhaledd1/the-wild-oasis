@@ -11,7 +11,7 @@ import React, {
 import { useOutsideClick } from "../hooks/useOutsideClick.ts";
 
 const StyledModal = styled.div`
-  position: fixed;
+  //position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -23,7 +23,7 @@ const StyledModal = styled.div`
 `;
 
 const Overlay = styled.div`
-  position: fixed;
+  //position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -54,7 +54,7 @@ const Button = styled.button`
     height: 2.4rem;
     /* Sometimes we need both */
     /* fill: var(--color-grey-500);
-    stroke: var(--color-grey-500); */
+            stroke: var(--color-grey-500); */
     color: var(--color-grey-500);
   }
 `;

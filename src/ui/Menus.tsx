@@ -31,6 +31,7 @@ const Menu = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  position: relative;
 `;
 
 const StyledToggle = styled.button`
@@ -40,6 +41,7 @@ const StyledToggle = styled.button`
   border-radius: var(--border-radius-sm);
   transform: translateX(0.8rem);
   transition: all 0.2s;
+  //position: relative;
 
   &:hover {
     background-color: var(--color-grey-100);
@@ -53,7 +55,7 @@ const StyledToggle = styled.button`
 `;
 
 const StyledList = styled.ul<MenusProps>`
-  position: fixed;
+  position: absolute;
 
   background-color: var(--color-grey-0);
   box-shadow: var(--shadow-md);
@@ -116,9 +118,11 @@ function Toggle({ id }: { id: string }) {
   const { openId, openMenu, closeMenu, setPosition } = useContext(MenusContext);
 
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
     const button = e.target as HTMLElement;
     const closestButton = button.closest("button");
     const rect = closestButton?.getBoundingClientRect();
+
     setPosition({
       x: window.innerWidth - (rect?.width ?? 0) - (rect?.x ?? 0),
       y: (rect?.y ?? 0) + (rect?.height ?? 0) + 8,
@@ -136,7 +140,7 @@ function Toggle({ id }: { id: string }) {
 
 function List({ id, children }: { id: string; children: React.ReactNode }) {
   const { openId, position, closeMenu } = useContext(MenusContext);
-  const ref = useOutsideClick<HTMLUListElement>(closeMenu);
+  const ref = useOutsideClick<HTMLUListElement>(closeMenu, false);
 
   if (openId !== id || !position) return null;
 
@@ -152,25 +156,30 @@ function Button({
   children,
   icon,
   onClick,
+  disabled,
 }: {
   children: React.ReactNode;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
 }) {
   const { closeMenu } = useContext(MenusContext);
+
   function handleClick() {
     onClick?.();
     closeMenu();
   }
+
   return (
     <li>
-      <StyledButton onClick={handleClick}>
+      <StyledButton onClick={handleClick} disabled={disabled}>
         {icon}
         <span>{children}</span>
       </StyledButton>
     </li>
   );
 }
+
 Menus.Menu = Menu;
 Menus.Toggle = Toggle;
 Menus.List = List;

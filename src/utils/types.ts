@@ -1,5 +1,6 @@
 export interface cabin {
   [key: string]: any;
+
   id: number;
   maxCapacity: number;
   name: string;
@@ -79,9 +80,47 @@ export interface booking {
   numNights: number;
   numGuests: number;
   totalPrice: number;
+  extrasPrice: number;
   status: string;
   guests: guest;
   cabins: cabin;
+}
+
+export interface bookingDataProps {
+  created_at: string;
+  startDate: string;
+  endDate: string;
+  numNights: number;
+  numGuests: number;
+  cabinPrice: number;
+  extrasPrice: number;
+  totalPrice: number;
+  hasBreakfast: boolean;
+  observations: string;
+  isPaid: boolean;
+  guests: {
+    fullName: string;
+    email: string;
+    country: string;
+    countryFlag: string;
+    nationalID: string;
+  };
+  cabins: cabin;
+}
+
+export interface user {
+  fullName: string;
+  email: string;
+  password: string;
+  passwordConfirm?: string;
+}
+
+export interface userForm {
+  fullName: string;
+  user_metadata: {
+    fullName: string;
+    avatar: string;
+  };
 }
 
 export type TagType = "blue" | "green" | "silver";
